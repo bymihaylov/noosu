@@ -1,3 +1,5 @@
 .venv/
-osu_packs/
+external_packs/
 .vscode/
+assets/
+__pycache__/
