@@ -4,8 +4,8 @@ assets_dir = Path("assets")
 external_packs_dir = Path("external_packs")
 font_dir = Path("fonts")
 
-width = 1280
-height = 720
+width = 640
+height = 480
 fps = 60
 
 # Colours

@@ -44,9 +44,11 @@ class Setup(Scene):
             parse_beatmap.uncompress_archive(pack_path)
 
     def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.K_ESCAPE:
-                print('PAM!')
+        pass
+        # for event in events:
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_RETURN:
+        #             pass
 
     
     def update(self, dt):
