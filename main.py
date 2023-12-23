@@ -1,11 +1,13 @@
 import config
-from parse_beatmap import uncompress_beatmap_to_dest
+from setup import Setup
+from parse_beatmap import uncompress_archive
 from pathlib import Path
 import pygame
 
 if __name__ == "__main__":
 
-    uncompress_beatmap_to_dest("external_packs/891596 Noisestorm - Crab Rave.osz")
+    Setup()
+    uncompress_archive("external_packs/891596 Noisestorm - Crab Rave.osz")
 
     pygame.init()
     pygame.mixer.init()  ## For sound
