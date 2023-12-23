@@ -4,7 +4,7 @@ from timing_point import TimingPoint
 from hit_object import HitObject
 
 class SongObj:
-    def __init__(self, dot_osu_path: str) -> None:
+    def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points_lst: list, hit_objects_lst: list) -> None:
         self.general = {
             "audio_filename": "audio.mp3",
             "audio_lead_in": 0,

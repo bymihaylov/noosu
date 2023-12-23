@@ -32,6 +32,8 @@ class Setup(Scene):
         else:
             self.extract_missing_packs()
 
+        parse_beatmap.parse_osu_file(Path("assets/891596 Noisestorm - Crab Rave/Noisestorm - Crab Rave (GreenHue) [Cami's Normal].osu"))
+
     def extract_missing_packs(self):
         external_packs_names = {item.stem for item in self.external_packs.glob('*.osz')}
         assets_names = {item.stem for item in self.assets_dir.iterdir()}
