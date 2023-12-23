@@ -1,7 +1,5 @@
 import config
 from setup import Setup
-from parse_beatmap import uncompress_archive
-from pathlib import Path
 import pygame
 
 if __name__ == "__main__":
