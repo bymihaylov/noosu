@@ -5,24 +5,29 @@ from pathlib import Path
 import pygame
 
 if __name__ == "__main__":
-
-    Setup()
-    uncompress_archive("external_packs/891596 Noisestorm - Crab Rave.osz")
-
     pygame.init()
     pygame.mixer.init()  ## For sound
-    screen = pygame.display.set_mode((config.width, config.height))
     pygame.display.set_caption("noosu!")
-    clock = pygame.time.Clock()  ## For syncing the FPS
+
+    screen = pygame.display.set_mode((config.width, config.height))
+    clock = pygame.time.Clock()
+    running = True
+    scene = Setup()
+    scene.setup()
 
     ## Game loop
-    running = True
     while running:
-        clock.tick(config.fps)
-        for event in pygame.event.get():
+        dt = clock.tick(config.fps)
+        events = list(pygame.event.get())
+
+        scene.handle_events(events)
+        scene.update(dt)
+        scene.render(screen)
+        
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
-
+        
         pygame.display.flip()
 
     pygame.quit()

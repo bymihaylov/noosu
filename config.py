@@ -2,6 +2,7 @@ from pathlib import Path
 
 assets_dir = Path("assets")
 external_packs_dir = Path("external_packs")
+font_dir = Path("fonts")
 
 width = 1280
 height = 720
@@ -12,3 +13,4 @@ black = 0, 0, 0
 red = 250, 0, 0
 green = 0, 250, 0
 blue = 0, 0, 250
+white = 250, 250, 250
