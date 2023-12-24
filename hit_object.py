@@ -2,10 +2,10 @@ import enum
 from typing import Any
 
 class HitObject:
-    def __init__(self, x: int, y: int, time: int, type: enum.IntFlag, hitSound: enum.IntFlag, objectParams: list[Any], hitSample: str) -> None:
+    def __init__(self, x: int, y: int, time: int, obj_type: enum.IntFlag, hitSound: enum.IntFlag, objectParams: list[Any], hitSample: str) -> None:
         self.__pos: tuple[int, int] = x, y
         self._time = time
-        self._type = type
+        self._type = obj_type
         self._hitSound = hitSound
         self._objectParams = objectParams
         self._hitSample = hitSample
