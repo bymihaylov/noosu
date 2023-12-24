@@ -21,11 +21,11 @@ if __name__ == "__main__":
         scene.handle_events(events)
         scene.update(dt)
         scene.render(screen)
-        
+
         for event in events:
             if event.type == pygame.QUIT:
                 running = False
-        
+
         pygame.display.flip()
 
     pygame.quit()
