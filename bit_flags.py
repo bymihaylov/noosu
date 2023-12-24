@@ -21,3 +21,4 @@ class HitSoundsType(IntFlag):
     FINISH = 4  # Bit 2
     CLAP = 8  # Bit 3
 
+
