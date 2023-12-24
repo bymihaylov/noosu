@@ -2,6 +2,7 @@ import config
 from hit_object import HitObject
 from timing_point import TimingPoint
 from noosu_object import NoosuObject
+from bit_flags import TimingPointEffects
 import zipfile
 from pathlib import Path
 
@@ -71,54 +72,94 @@ def parse_metadata(content: str) -> dict:
 
 def parse_difficulty(content: str) -> dict:
     include_fields = (
-    "HPDrainRate", "CircleSize", "OverallDifficulty", "ApproachRate", "SliderMultiplier", "SliderTickRate")
+        "HPDrainRate", "CircleSize", "OverallDifficulty", "ApproachRate", "SliderMultiplier", "SliderTickRate")
     data = extract_to_dict(content, include_fields)
     [cast_val_to_float(data=data, key=key) for key in include_fields]
     return data
 
 
 def parse_timing(content: str) -> list[TimingPoint]:
+    lines = content.split("\n")
+    return [parse_timing_line(line) for line in lines[1:]]
+
+
+def parse_timing_line(line: str) -> TimingPoint:
     """
     Timing point syntax: time,beatLength,meter,sampleSet,sampleIndex,volume,uninherited,effects
-    
+
     time (Integer) - Start time of the timing section, in milliseconds from the beginning of the beatmap's audio. The end of the timing section is the next timing point's time (or never, if this is the last timing point).
-    
+
     beatLength (Decimal) - For uninherited timing points, the duration of a beat, in milliseconds.
                          - For inherited timing points, a negative inverse slider velocity multiplier, as a percentage. For example, -50 would make all sliders in this timing section twice as fast as SliderMultiplier
-    
+
     meter (Integer): Amount of beats in a measure. Inherited timing points ignore this property.
-    
+
     sampleSet (Integer): Default sample set for hit objects (0 = beatmap default, 1 = normal, 2 = soft, 3 = drum)
-    
+
     sampleIndex (Integer): Custom sample index for hit objects. 0 indicates osu!'s default hitsounds.
-    
+
     volume (Integer): Volume percentage for hit objects.
-    
+
     uninherited (0 or 1): Whether or not the timing point is uninherited.
-    
+
     effects (Integer): Bit flags that give the timing point extra effects.
 
     ------
     source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
     """
+    time, beat_len, meter, sample_set, sample_index, volume, uninherited, effect = map(
+        lambda x: int(x) if x.isdigit() else float(x),
+        line.split(',')
+    )
+    uninherited = bool(uninherited)
+
+    timing_point_effects = TimingPointEffects(0)
+    if effect & TimingPointEffects.KIAI_TIME_ENABLED:
+        timing_point_effects |= TimingPointEffects.KIAI_TIME_ENABLED
+
+    if effect & TimingPointEffects.OMIT_FIRST_BARLINE:
+        timing_point_effects |= TimingPointEffects.OMIT_FIRST_BARLINE
+
+    return TimingPoint(time, beat_len, meter, sample_set, sample_index, volume, uninherited, timing_point_effects)
+
+
+def parse_hit_object_line(line: str) -> HitObject:
+    """
+        Hit object syntax: x,y,time,type,hitSound,objectParams,hitSample
+
+        x (Integer) and y (Integer): Position in osu! pixels of the object.
+
+        time (Integer): Time when the object is to be hit, in milliseconds from the beginning of the beatmap's audio.
+
+        type (Integer): Bit flags indicating the type of the object. See the type section.
+
+        hitSound (Integer): Bit flags indicating the hitsound applied to the object. See the hitsound section.
+
+        objectParams (Comma-separated list): Extra parameters specific to the object's type.
+
+        hitSample (Colon-separated list): Information about which samples are played when the object is hit. It is closely related to hitSound; see the hitsounds section. If it is not written, it defaults to 0:0:0:0:.
+
+        -----
+        source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
+        """
+
+    print(f"{line=}")
+    x = int(line.split(",")[0])
+    y = int(line.split(",")[1])
+    time = int(line.split(",")[2])
+    obj_type = int(line.split(",")[3])
+    hit_sound = int(line.split(",")[4])
+    # print(f"{x=}\t{y=}\t{time=}\t{obj_type=}\t{hit_sound=}")
+
+    # Todo: bit fields
+
+    # Todo: implement parsing logic for obj_params and hit_sample
+    obj_params = []
+    hit_sample = "0:0:0:0"
+
+    return HitObject(x, y, time, obj_type, hit_sound, obj_params, hit_sample)
 
 
 def parse_hit_object(content: str) -> list[HitObject]:
-    """
-    Hit object syntax: x,y,time,type,hitSound,objectParams,hitSample
-
-    x (Integer) and y (Integer): Position in osu! pixels of the object.
-
-    time (Integer): Time when the object is to be hit, in milliseconds from the beginning of the beatmap's audio.
-
-    type (Integer): Bit flags indicating the type of the object. See the type section.
-
-    hitSound (Integer): Bit flags indicating the hitsound applied to the object. See the hitsound section.
-
-    objectParams (Comma-separated list): Extra parameters specific to the object's type.
-
-    hitSample (Colon-separated list): Information about which samples are played when the object is hit. It is closely related to hitSound; see the hitsounds section. If it is not written, it defaults to 0:0:0:0:.
-
-    -----
-    source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
-    """
+    lines = content.split("\n")
+    return [parse_hit_object_line(line) for line in lines[1:]]
