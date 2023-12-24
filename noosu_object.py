@@ -13,8 +13,8 @@ class NoosuObject:
         # self.events = {}
 
         # numpy array instead of a list?
-        self._timing_points: np.array = np.array(object=TimingPoint, *timing_points)
-        self._hit_objects: np.array = np.array(object=HitObject, *hit_objects)
+        self._timing_points: np.array = np.array(timing_points)
+        self._hit_objects: np.array = np.array(hit_objects)
 
     @property
     def general(self):
