@@ -1,7 +1,6 @@
-from bit_flags import TimingPointEffects
 
-class TimingPoint():
-    def __init__(self, time: int, beat_len: float, meter: int, sample_set: int, sample_index: int, volume: int, uninherited: bool, effects: TimingPointEffects):
+class TimingPoint:
+    def __init__(self, time: int, beat_len: float, meter: int, sample_set: int, sample_index: int, volume: int, uninherited: bool, effects: int):
         self._time = time
         self._beat_len = beat_len
         self._meter = meter
@@ -40,5 +39,5 @@ class TimingPoint():
         return self._uninherited
 
     @property
-    def effects(self) -> TimingPointEffects:
+    def effects(self) -> int:
         return self._effects

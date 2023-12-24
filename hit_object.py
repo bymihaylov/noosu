@@ -1,14 +1,13 @@
-import enum
-from typing import Any
+
 
 class HitObject:
-    def __init__(self, x: int, y: int, time: int, obj_type: enum.IntFlag, hitSound: enum.IntFlag, objectParams: list[Any], hitSample: str) -> None:
+    def __init__(self, x: int, y: int, time: int, obj_type: int, hit_sound: int, object_params: list[str], hit_sample: str) -> None:
         self.__pos: tuple[int, int] = x, y
         self._time = time
         self._type = obj_type
-        self._hitSound = hitSound
-        self._objectParams = objectParams
-        self._hitSample = hitSample
+        self._hit_sound = hit_sound
+        self._object_params = object_params
+        self._hit_sample = hit_sample
 
     @property
     def x(self) -> int:
@@ -27,17 +26,17 @@ class HitObject:
         return self._time
 
     @property
-    def type(self) -> enum.IntFlag:
+    def type(self) -> int:
         return self._type
 
     @property
-    def hitSound(self) -> enum.IntFlag:
-        return self._hitSound
+    def hitSound(self) -> int:
+        return self._hit_sound
 
     @property
-    def objectParams(self) -> list[Any]:
-        return self._objectParams
+    def objectParams(self) -> list[str]:
+        return self._object_params
 
     @property
     def hitSample(self) -> str:
-        return self._hitSample
+        return self._hit_sample
