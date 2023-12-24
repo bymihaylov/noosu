@@ -1,18 +1,17 @@
-import config
-import parse_beatmap
 from timing_point import TimingPoint
 from hit_object import HitObject
 import numpy as np
 
+
 class NoosuObject:
-    def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points: list, hit_objects: list) -> None:
+    def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points: list[TimingPoint],
+                 hit_objects: list[HitObject]) -> None:
         self._general = general
         self._metadata = metadata
         self._difficulty = difficulty
 
         # self.events = {}
 
-        # numpy array instead of a list?
         self._timing_points: np.array = np.array(timing_points)
         self._hit_objects: np.array = np.array(hit_objects)
 
