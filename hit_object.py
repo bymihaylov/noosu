@@ -19,7 +19,7 @@ class HitObject:
         return self.__pos[1]
     
     @property
-    def xy_position(self) -> tuple(int, int):
+    def xy_position(self) -> tuple[int, int]:
         return self.__pos
 
     @property
