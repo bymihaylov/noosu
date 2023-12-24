@@ -1,7 +1,7 @@
 import config
 from hit_object import HitObject
 from timing_point import TimingPoint
-from song_object import SongObj
+from noosu_object import NoosuObject
 import zipfile
 from pathlib import Path
 
@@ -11,7 +11,7 @@ def uncompress_archive(src_path: str) -> None:
         zip_ref.extractall(path=path) 
         zip_ref.extract
 
-def parse_osu_file(src_path: str) -> SongObj:
+def parse_osu_file(src_path: str) -> NoosuObject:
     with open(src_path, "r") as osu_file:
         content = osu_file.read()
     
@@ -89,7 +89,7 @@ def parse_timing(content: str) -> TimingPoint:
     source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
     """
 
-def parse_hit_object(content: Iterable) -> HitObject:
+def parse_hit_object(content: str) -> HitObject:
     """
     Hit object syntax: x,y,time,type,hitSound,objectParams,hitSample
 
