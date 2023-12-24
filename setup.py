@@ -5,34 +5,34 @@ import os
 from pathlib import Path
 import pygame
 
+
 class Setup(Scene):
     def __init__(self):
 
-        self.assets_dir: os.PathLike  = config.assets_dir
-        self.external_packs: os.PathLike =  config.external_packs_dir
-        self.font_path : os.PathLike = config.font_dir
-        self.font = pygame.font.Font(self.font_path / "MetronicPro.ttf", 28)
+        self.assets_dir: os.PathLike = config.assets_dir
+        self.external_packs: os.PathLike = config.external_packs_dir
+        self.font_path: os.PathLike = config.font_dir
+        self.font = pygame.font.Font(self.font_path / "MetronicPro.ttf", 16)
         self.text_surface = None
         self.text_position = (20, 20)
         self.render_text("Setup...")
-    
+
     def setup(self):
         ext_packs_was_initially_missing: bool = self.create_dir_if_missing(self.external_packs)
         assets_dir_was_initially_missing: bool = self.create_dir_if_missing(self.assets_dir)
-        
+
         if ext_packs_was_initially_missing:
             # requests logic to pull some .osz packs
             pass
-        
+
         if assets_dir_was_initially_missing:
-            # get in a list all .osz archives and pass on them 
             for archive in self.external_packs.glob('*.osz'):
                 self.render_text(f"Extracting '{archive}'...")
                 parse_beatmap.uncompress_archive(archive)
         else:
             self.extract_missing_packs()
 
-        parse_beatmap.parse_osu_file(Path("assets/891596 Noisestorm - Crab Rave/Noisestorm - Crab Rave (GreenHue) [Cami's Normal].osu"))
+        self.render_text(f"Setup...done", color=config.green)
 
     def extract_missing_packs(self):
         external_packs_names = {item.stem for item in self.external_packs.glob('*.osz')}
@@ -52,7 +52,6 @@ class Setup(Scene):
         #         if event.key == pygame.K_RETURN:
         #             pass
 
-    
     def update(self, dt):
         pass
 
@@ -64,14 +63,9 @@ class Setup(Scene):
     def render_text(self, text: str, color: tuple[int, int, int] = config.white):
         self.text_surface = self.font.render(text, True, color)
 
-
-    def does_dir_exists(self, path: os.PathLike) -> bool:
-        return os.path.isdir(path)
-    
     def create_dir_if_missing(self, path: os.PathLike) -> bool:
-        if not self.does_dir_exists(path):
-            msg = f"'{path}' not found. Creating '{path}' directory..."
-            self.render_text(msg)
+        if not os.path.isdir(path):
+            self.render_text(f"'{path}' not found. Creating '{path}' directory...")
             os.mkdir(path)
             return True
         return False
