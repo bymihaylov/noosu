@@ -4,7 +4,6 @@ from timing_point import TimingPoint
 from song_object import SongObj
 import zipfile
 from pathlib import Path
-from collections.abc import Iterable
 
 def uncompress_archive(src_path: str) -> None:
     with zipfile.ZipFile(src_path, "r") as zip_ref:
@@ -17,24 +16,55 @@ def parse_osu_file(src_path: str) -> SongObj:
         content = osu_file.read()
     
     sections = [section.strip() for section in content.split("\n\n") if section.strip()]
-    general: dict = parse_general(filter(lambda x: x.startswith("[General]"), sections))
-    metadata: dict = parse_metadata(filter(lambda x: x.startswith("[Metadata]"), sections))
-    difficulty: dict = parse_difficulty(filter(lambda x: x.startswith("[Difficulty]"), sections))
-    #parse timing_point & hit_object
+    osu_file_content = {section.split('\n')[0]: section for section in sections if section.startswith("[")}
+    
+    general: dict = parse_general(osu_file_content["[General]"])
+    metadata: dict = parse_metadata(osu_file_content["[Metadata]"])
+    difficulty: dict = parse_difficulty(osu_file_content["[Difficulty]"])
 
-    #return SongObj(general, metadata, difficulty, timing_points_lst=, hit_objects_lst=)
 
-def parse_general(content: Iterable) -> dict:
-    for i in content:
-        print(f"{i=}")
+def extract_to_dict(content: str, include_fields: tuple) -> dict[str, str]:
+    """
+    Extracts key-value pairs from the given content based on the specified include fields.
 
-def parse_metadata(content: Iterable) -> dict:
-    pass
+    Parameters:
+        content (str): The content to extract key-value pairs from.
+        include_fields (tuple): A tuple of field names to include in the result.
 
-def parse_difficulty(content: Iterable) -> dict:
-    pass
+    Returns:
+        dict[str, str]: A dictionary containing key-value pairs extracted from the content.
+    """
+    
+    lines = content.split('\n')
+    return {key: val for line in lines if line.startswith(include_fields) for key, val in [map(str.strip, line.split(':', 1))]}
 
-def parse_timing(content: Iterable) -> TimingPoint:
+def cast_val_to_int(data: dict, key: str) -> None:
+    data[key] = int(data[key])
+
+def cast_val_to_float(data:dict, key: str) -> None:
+    data[key] = float(data[key])
+
+def parse_general(content: str) -> dict:
+    include_fields = ("AudioFilename", "AudioLeadIn", "PreviewTime")
+    data = extract_to_dict(content, include_fields)
+    
+    cast_val_to_int(data, "AudioLeadIn")
+    cast_val_to_int(data, "PreviewTime")
+    return data
+
+
+def parse_metadata(content: str) -> dict:
+    include_fields = ("TitleUnicode", "ArtistUnicode", "Creator")
+    return extract_to_dict(content, include_fields)
+
+
+def parse_difficulty(content: str) -> dict:
+    include_fields = ("HPDrainRate", "CircleSize", "OverallDifficulty", "ApproachRate", "SliderMultiplier", "SliderTickRate")
+    data = extract_to_dict(content, include_fields)
+    [cast_val_to_float(data=data, key=key) for key in include_fields]
+    return data
+
+def parse_timing(content: str) -> TimingPoint:
     """
     Timing point syntax: time,beatLength,meter,sampleSet,sampleIndex,volume,uninherited,effects
     
