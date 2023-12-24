@@ -2,7 +2,6 @@ import config
 from hit_object import HitObject
 from timing_point import TimingPoint
 from noosu_object import NoosuObject
-from bit_flags import TimingPointEffects
 import zipfile
 from pathlib import Path
 
@@ -11,7 +10,6 @@ def uncompress_archive(src_path: str) -> None:
     with zipfile.ZipFile(src_path, "r") as zip_ref:
         path = Path(config.assets_dir, src_path.stem)
         zip_ref.extractall(path=path)
-        zip_ref.extract
 
 
 def parse_osu_file(src_path: str) -> NoosuObject:
@@ -113,14 +111,7 @@ def parse_timing_line(line: str) -> TimingPoint:
     )
     uninherited = bool(uninherited)
 
-    timing_point_effects = TimingPointEffects(0)
-    if effect & TimingPointEffects.KIAI_TIME_ENABLED:
-        timing_point_effects |= TimingPointEffects.KIAI_TIME_ENABLED
-
-    if effect & TimingPointEffects.OMIT_FIRST_BARLINE:
-        timing_point_effects |= TimingPointEffects.OMIT_FIRST_BARLINE
-
-    return TimingPoint(time, beat_len, meter, sample_set, sample_index, volume, uninherited, timing_point_effects)
+    return TimingPoint(time, beat_len, meter, sample_set, sample_index, volume, uninherited, effect)
 
 
 def parse_hit_object_line(line: str) -> HitObject:
@@ -143,19 +134,9 @@ def parse_hit_object_line(line: str) -> HitObject:
         source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
         """
 
-    print(f"{line=}")
-    x = int(line.split(",")[0])
-    y = int(line.split(",")[1])
-    time = int(line.split(",")[2])
-    obj_type = int(line.split(",")[3])
-    hit_sound = int(line.split(",")[4])
-    # print(f"{x=}\t{y=}\t{time=}\t{obj_type=}\t{hit_sound=}")
-
-    # Todo: bit fields
-
-    # Todo: implement parsing logic for obj_params and hit_sample
-    obj_params = []
-    hit_sample = "0:0:0:0"
+    x, y, time, obj_type, hit_sound, *obj_params, hit_sample = map(str, line.split(','))
+    x, y, time, obj_type, hit_sound = map(int, [x, y, time, obj_type, hit_sound])       # Cast to int
+    #print(f"{x, y, time, obj_type, hit_sound, *obj_params, hit_sample =}")
 
     return HitObject(x, y, time, obj_type, hit_sound, obj_params, hit_sample)
 
