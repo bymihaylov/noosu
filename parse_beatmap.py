@@ -5,22 +5,29 @@ from noosu_object import NoosuObject
 import zipfile
 from pathlib import Path
 
+
 def uncompress_archive(src_path: str) -> None:
     with zipfile.ZipFile(src_path, "r") as zip_ref:
         path = Path(config.assets_dir, src_path.stem)
-        zip_ref.extractall(path=path) 
+        zip_ref.extractall(path=path)
         zip_ref.extract
+
 
 def parse_osu_file(src_path: str) -> NoosuObject:
     with open(src_path, "r") as osu_file:
         content = osu_file.read()
-    
+
     sections = [section.strip() for section in content.split("\n\n") if section.strip()]
     osu_file_content = {section.split('\n')[0]: section for section in sections if section.startswith("[")}
-    
+
     general: dict = parse_general(osu_file_content["[General]"])
     metadata: dict = parse_metadata(osu_file_content["[Metadata]"])
     difficulty: dict = parse_difficulty(osu_file_content["[Difficulty]"])
+
+    timing_points: list[TimingPoint] = parse_timing(osu_file_content["[TimingPoints]"])
+    hit_objects: list[HitObject] = parse_hit_object(osu_file_content["[HitObjects]"])
+
+    return NoosuObject(general, metadata, difficulty, timing_points, hit_objects)
 
 
 def extract_to_dict(content: str, include_fields: tuple) -> dict[str, str]:
@@ -34,20 +41,24 @@ def extract_to_dict(content: str, include_fields: tuple) -> dict[str, str]:
     Returns:
         dict[str, str]: A dictionary containing key-value pairs extracted from the content.
     """
-    
+
     lines = content.split('\n')
-    return {key: val for line in lines if line.startswith(include_fields) for key, val in [map(str.strip, line.split(':', 1))]}
+    return {key: val for line in lines if line.startswith(include_fields) for key, val in
+            [map(str.strip, line.split(':', 1))]}
+
 
 def cast_val_to_int(data: dict, key: str) -> None:
     data[key] = int(data[key])
 
-def cast_val_to_float(data:dict, key: str) -> None:
+
+def cast_val_to_float(data: dict, key: str) -> None:
     data[key] = float(data[key])
+
 
 def parse_general(content: str) -> dict:
     include_fields = ("AudioFilename", "AudioLeadIn", "PreviewTime")
     data = extract_to_dict(content, include_fields)
-    
+
     cast_val_to_int(data, "AudioLeadIn")
     cast_val_to_int(data, "PreviewTime")
     return data
@@ -59,12 +70,14 @@ def parse_metadata(content: str) -> dict:
 
 
 def parse_difficulty(content: str) -> dict:
-    include_fields = ("HPDrainRate", "CircleSize", "OverallDifficulty", "ApproachRate", "SliderMultiplier", "SliderTickRate")
+    include_fields = (
+    "HPDrainRate", "CircleSize", "OverallDifficulty", "ApproachRate", "SliderMultiplier", "SliderTickRate")
     data = extract_to_dict(content, include_fields)
     [cast_val_to_float(data=data, key=key) for key in include_fields]
     return data
 
-def parse_timing(content: str) -> TimingPoint:
+
+def parse_timing(content: str) -> list[TimingPoint]:
     """
     Timing point syntax: time,beatLength,meter,sampleSet,sampleIndex,volume,uninherited,effects
     
@@ -89,7 +102,8 @@ def parse_timing(content: str) -> TimingPoint:
     source: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29
     """
 
-def parse_hit_object(content: str) -> HitObject:
+
+def parse_hit_object(content: str) -> list[HitObject]:
     """
     Hit object syntax: x,y,time,type,hitSound,objectParams,hitSample
 

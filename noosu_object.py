@@ -2,32 +2,36 @@ import config
 import parse_beatmap
 from timing_point import TimingPoint
 from hit_object import HitObject
+import numpy as np
 
 class NoosuObject:
-    def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points_lst: list, hit_objects_lst: list) -> None:
-        self.general = {
-            "audio_filename": "audio.mp3",
-            "audio_lead_in": 0,
-            "preview_time": 136460,
-        }
-        
-        self.metadata = {
-            "title_unicode": "Title Unicode",
-            "artist_unicode": "Artist Unicode",
-            "creator": "Creator"
-        }  # For future maybe add tags
-
-        self.difficulty = {
-            "hp_drain_rate": 3,
-            "circle_size": 3.2,
-            "overall_difficulty": 3,
-            "approach_rate": 4.5,
-            "slider_multiplier": 1.3,
-            "slider_tick_rate": 1
-        }
+    def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points: list, hit_objects: list) -> None:
+        self._general = general
+        self._metadata = metadata
+        self._difficulty = difficulty
 
         # self.events = {}
 
         # numpy array instead of a list?
-        self.timing_points_lst: list[TimingPoint]
-        self.hit_objects_lst: list[HitObject]
+        self._timing_points: np.array = np.array(object=TimingPoint, *timing_points)
+        self._hit_objects: np.array = np.array(object=HitObject, *hit_objects)
+
+    @property
+    def general(self):
+        return self._general
+
+    @property
+    def metadata(self):
+        return self._metadata
+
+    @property
+    def difficulty(self):
+        return self._difficulty
+
+    @property
+    def timing_points(self):
+        return self._timing_points
+
+    @property
+    def hit_objects(self):
+        return self._hit_objects
