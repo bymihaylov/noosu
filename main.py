@@ -1,5 +1,7 @@
 import config
 from setup import Setup
+from pathlib import Path
+from playfield import Playfield
 import pygame
 
 if __name__ == "__main__":
@@ -10,7 +12,7 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((config.width, config.height))
     clock = pygame.time.Clock()
     running = True
-    scene = Setup()
+    scene = Playfield(Path("assets/891596 Noisestorm - Crab Rave/Noisestorm - Crab Rave (GreenHue) [Cami's Normal].osu"))
     scene.setup()
 
     ## Game loop
