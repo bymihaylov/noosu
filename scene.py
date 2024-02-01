@@ -2,7 +2,7 @@ import pygame
 
 class Scene:
     def __init__(self):
-        """ Create all attributes """
+        self.next = self
 
     def setup(self):
         """ Load everything in and initialize attributes """
@@ -16,4 +16,6 @@ class Scene:
     def render(self, screen):
         """ Draw to the screen """
 
+    def switch_to_scene(self, next_scene):
+        self.next = next_scene
         

@@ -6,13 +6,14 @@ import pygame
 
 if __name__ == "__main__":
     pygame.init()
-    pygame.mixer.init()  ## For sound
+    pygame.mixer.init()
     pygame.display.set_caption("noosu!")
 
-    screen = pygame.display.set_mode((config.width, config.height))
+    screen = pygame.display.set_mode((config.width, config.height), pygame.FULLSCREEN | pygame.DOUBLEBUF)
     clock = pygame.time.Clock()
     running = True
-    scene = Playfield(Path("assets/891596 Noisestorm - Crab Rave/Noisestorm - Crab Rave (GreenHue) [Cami's Normal].osu"))
+    scene = Playfield(Path("assets/355322 nekodex - circles!/nekodex - circles! (pishifat) [insane!].osu"))
+    # scene = Setup()
     scene.setup()
 
     ## Game loop
@@ -25,9 +26,10 @@ if __name__ == "__main__":
         scene.render(screen)
 
         for event in events:
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
                 running = False
 
         pygame.display.flip()
 
     pygame.quit()
+# project deadline: 11.02
