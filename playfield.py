@@ -21,6 +21,22 @@ source: https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 
 class Playfield(Scene):
     def __init__(self, dot_osu_path: str):
+        self.gamefield_width = 640
+        self.gamefield_height = 480
+        self.gamefield_shift = 8
+
+        # https://www.reddit.com/r/osugame/comments/ff6n01/resolution_of_the_playfield/
+        self.playfield_height = int(0.8 * config.height)
+        self.playfield_width = int(self.playfield_height * 4 / 3)
+
+        self.playfield_top_left = ((config.width - self.playfield_width) // 2, (config.height - self.playfield_height) // 2)
+        self.playfield_bottom_right = (self.playfield_top_left[0] + self.playfield_width,
+                                       self.playfield_top_left[1] + self.playfield_height)
+        self.playfield_centre = ((self.playfield_top_left[0] + self.playfield_bottom_right[0]) // 2,
+                                 (self.playfield_top_left[1] + self.playfield_bottom_right[1]) // 2)
+
+
+
         self.dot_osu_path = dot_osu_path
         self.noosu: NoosuObject = parse_osu_file(self.dot_osu_path)
         self.all_sprites_list = pygame.sprite.Group()
@@ -45,7 +61,16 @@ class Playfield(Scene):
         Returns:
             screenspace: tuple[int, int]
         """
-        pass
+
+        scale_x = self.playfield_width / 512
+        scale_y = self.playfield_height / 384
+
+        # screenspace_x = int((gamefield[0] * scale_x))
+        # screenspace_y = int((gamefield[1] * scale_y))
+        screenspace_x = int((gamefield[0] * scale_x) + self.playfield_top_left[0])
+        screenspace_y = int((gamefield[1] * scale_y) + self.playfield_top_left[1] + self.gamefield_shift * scale_y)
+
+        return screenspace_x, screenspace_y
 
     def screenspace_to_gamefield(self, screenspace: tuple[int, int]) -> tuple[int, int]:
         """
@@ -56,16 +81,22 @@ class Playfield(Scene):
         Returns:
             gamefield: tuple[int, int]
         """
-        pass
+        # Calculate scaling factors for x and y
+        scale_x = 512 / self.playfield_width
+        scale_y = 384 / self.playfield_height
+
+        # Convert screen space coordinates to gamefield
+        gamefield_x = int((screenspace[0] - self.playfield_top_left[0]) * scale_x)
+        gamefield_y = int((screenspace[1] - self.playfield_top_left[1] - self.gamefield_shift * scale_y) * scale_y)
+
+        return gamefield_x, gamefield_y
 
     def update(self, dt):
-        relative_coords: tuple[int, int] = self.noosu.hit_objects[self.hit_obj_index].xy_position
-        # pos: tuple[int, int] = (relative_coords[0] + (config.width - 512) // 2, relative_coords[1] + (config.height - 364) // 2)
+        gamefield_coords: tuple[int, int] = self.noosu.hit_objects[self.hit_obj_index].xy_position
 
-        x, y = relative_coords
-        pos: tuple[int, int] = (config.width * 0.2 + x * 1.8, config.height * 0.12 + y * 1.8) # magic?
-        print(f"{relative_coords=}\t{pos=}")
-        hit_circle = HitCircle(config.blue, relative_coords, 1)
+        # hit_circle = HitCircle(config.blue, self.gamefield_to_screenspace(gamefield_coords), 5)
+        hit_circle = HitCircle(config.blue, self.gamefield_to_screenspace((256, 192)), 5)
+
         # print(f"{len(self.noosu.hit_objects)=}")
         if self.hit_obj_index + 1 < len(self.noosu.hit_objects):
             if self.noosu.hit_objects[self.hit_obj_index].type & bit_flags.HitObjectType.HIT_CIRCLE:
