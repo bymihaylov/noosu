@@ -18,10 +18,9 @@ class HitCircle(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor
         super().__init__()
 
-        # Pass in the color of the player, and its x and y position, width and height.
-        # Set the background color and set it to be transparent
         self.radius = 54.4 - 4.48 * circle_size
         self.image = pygame.Surface((self.radius * 2, self.radius * 2))
+        # Set the background color and set it to be transparent
         self.image.fill(config.white)
         self.image.set_colorkey(config.white)
 
