@@ -44,8 +44,6 @@ class Playfield(Scene):
             (self.playfield_top_left[1] + self.playfield_bottom_right[1]) // 2
         )
 
-        # self.dot_osu_path = dot_osu_path
-        # self.noosu: NoosuObject = parse_osu_file(self.dot_osu_path)
         self.noosu: NoosuObject = noosu_obj
         self.all_sprites_list = pygame.sprite.Group()
         self.hit_obj_index = 0
@@ -100,18 +98,6 @@ class Playfield(Scene):
 
         return gamefield_x, gamefield_y
 
-    # def update(self, dt):
-    #     hit_object = self.noosu.hit_objects[self.hit_obj_index]
-    #     gamefield_coords: tuple[int, int] = hit_object.xy_position
-    #
-    #     print(gamefield_coords)
-    #
-    #     hit_circle = HitCircle(config.blue, self.gamefield_to_screenspace((256, 192)), 5)
-    #
-    #     if self.hit_obj_index + 1 < len(self.noosu.hit_objects):
-    #         if self.noosu.hit_objects[self.hit_obj_index].type & bit_flags.HitObjectType.HIT_CIRCLE:
-    #             self.all_sprites_list.add(hit_circle)
-    #         self.hit_obj_index += 1
 
     def update(self, dt):
         # Get the current time when updating
