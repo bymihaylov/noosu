@@ -12,14 +12,14 @@ def uncompress_archive(src_path: str) -> None:
         zip_ref.extractall(path=path)
 
 
-def parse_osu_file(src_path: str) -> NoosuObject:
+def parse_osu_file(src_path: str | Path) -> NoosuObject:
     with open(src_path, "r") as osu_file:
         content = osu_file.read()
 
     sections = [section.strip() for section in content.split("\n\n") if section.strip()]
     osu_file_content = {section.split('\n')[0]: section for section in sections if section.startswith("[")}
 
-    general: dict = parse_general(osu_file_content["[General]"])
+    general: dict = parse_general(osu_file_content["[General]"], Path(src_path).parent)
     metadata: dict = parse_metadata(osu_file_content["[Metadata]"])
     difficulty: dict = parse_difficulty(osu_file_content["[Difficulty]"])
 
@@ -54,9 +54,11 @@ def cast_val_to_float(data: dict, key: str) -> None:
     data[key] = float(data[key])
 
 
-def parse_general(content: str) -> dict:
+def parse_general(content: str, src_dir_path: str | Path) -> dict:
     include_fields = ("AudioFilename", "AudioLeadIn", "PreviewTime")
-    data = extract_to_dict(content, include_fields)
+    data: dict[str, str] = extract_to_dict(content, include_fields)
+
+    data["AudioFilename"] = src_dir_path / data["AudioFilename"]
 
     cast_val_to_int(data, "AudioLeadIn")
     cast_val_to_int(data, "PreviewTime")

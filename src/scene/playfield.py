@@ -19,7 +19,7 @@ source: https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 
 
 class Playfield(Scene):
-    def __init__(self, dot_osu_path: str):
+    def __init__(self, noosu_obj: NoosuObject):
         super().__init__()
 
         self.gamefield_width = 640
@@ -44,13 +44,16 @@ class Playfield(Scene):
             (self.playfield_top_left[1] + self.playfield_bottom_right[1]) // 2
         )
 
-        self.dot_osu_path = dot_osu_path
-        self.noosu: NoosuObject = parse_osu_file(self.dot_osu_path)
+        # self.dot_osu_path = dot_osu_path
+        # self.noosu: NoosuObject = parse_osu_file(self.dot_osu_path)
+        self.noosu: NoosuObject = noosu_obj
         self.all_sprites_list = pygame.sprite.Group()
         self.hit_obj_index = 0
 
+        self.setup()
+
     def setup(self):
-        pygame.mixer.music.load("assets/355322 nekodex - circles!/nekodex - circles! (pishifat) [Audio].mp3") # TODO: extract from noosu object?
+        pygame.mixer.music.load(self.noosu.general["AudioFilename"])
         pygame.mixer.music.play(0)
 
     def handle_events(self, events):
