@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from src.noosu.timing_point import TimingPoint
 from src.noosu.hit_object import HitObject
 import numpy as np
@@ -5,7 +7,7 @@ import numpy as np
 
 class NoosuObject:
     def __init__(self, general: dict, metadata: dict, difficulty: dict, timing_points: list[TimingPoint],
-                 hit_objects: list[HitObject]) -> None:
+                 hit_objects: list[HitObject], img_path: Path) -> None:
         self._general = general
         self._metadata = metadata
         self._difficulty = difficulty
@@ -14,6 +16,8 @@ class NoosuObject:
 
         self._timing_points: np.array = np.array(timing_points)
         self._hit_objects: np.array = np.array(hit_objects)
+
+        self.image_path = img_path
 
     @property
     def general(self):

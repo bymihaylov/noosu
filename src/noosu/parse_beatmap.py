@@ -16,17 +16,21 @@ def parse_osu_file(src_path: str | Path) -> NoosuObject:
     with open(src_path, "r") as osu_file:
         content = osu_file.read()
 
+    src_dir_path = Path(src_path).parent
+
     sections = [section.strip() for section in content.split("\n\n") if section.strip()]
     osu_file_content = {section.split('\n')[0]: section for section in sections if section.startswith("[")}
 
-    general: dict = parse_general(osu_file_content["[General]"], Path(src_path).parent)
+    general: dict = parse_general(osu_file_content["[General]"], src_dir_path)
     metadata: dict = parse_metadata(osu_file_content["[Metadata]"])
     difficulty: dict = parse_difficulty(osu_file_content["[Difficulty]"])
 
     timing_points: list[TimingPoint] = parse_timing(osu_file_content["[TimingPoints]"])
     hit_objects: list[HitObject] = parse_hit_object(osu_file_content["[HitObjects]"])
 
-    return NoosuObject(general, metadata, difficulty, timing_points, hit_objects)
+    image_path: Path = parse_events_to_get_img_path(osu_file_content["[Events]"], src_dir_path)
+
+    return NoosuObject(general, metadata, difficulty, timing_points, hit_objects, image_path)
 
 
 def extract_to_dict(content: str, include_fields: tuple) -> dict[str, str]:
@@ -137,8 +141,8 @@ def parse_hit_object_line(line: str) -> HitObject:
         """
 
     x, y, time, obj_type, hit_sound, *obj_params, hit_sample = map(str, line.split(','))
-    x, y, time, obj_type, hit_sound = map(int, [x, y, time, obj_type, hit_sound])       # Cast to int
-    #print(f"{x, y, time, obj_type, hit_sound, *obj_params, hit_sample =}")
+    x, y, time, obj_type, hit_sound = map(int, [x, y, time, obj_type, hit_sound])  # Cast to int
+    # print(f"{x, y, time, obj_type, hit_sound, *obj_params, hit_sample =}")
 
     return HitObject(x, y, time, obj_type, hit_sound, obj_params, hit_sample)
 
@@ -146,3 +150,28 @@ def parse_hit_object_line(line: str) -> HitObject:
 def parse_hit_object(content: str) -> list[HitObject]:
     lines = content.split("\n")
     return [parse_hit_object_line(line) for line in lines[1:]]
+
+
+"""
+Example:
+[Events]
+//Background and Video events
+0,0,"CRAB RAVE BG.png",0,0
+...
+
+We need CRAB RAVE BG.png
+"""
+
+def parse_events_to_get_img_path(content: str, src_dir_path: str | Path) -> Path:
+    # Find the index of the first occurrence of double quotes
+    start_index = content.find('"')
+
+    # Find the index of the second occurrence of double quotes
+    end_index = content.find('"', start_index + 1)
+
+    # Extract the image path between the double quotes
+    if start_index != -1 and end_index != -1:
+        filename = content[start_index + 1:end_index]
+        return src_dir_path / filename
+    else:
+        return Path("")
