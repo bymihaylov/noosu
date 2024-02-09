@@ -1,5 +1,5 @@
 import pygame
-import config
+from src.config import config
 
 """
 In osu!, circle size changes the size of hit circles and sliders, with higher values creating smaller hit objects. 

@@ -1,8 +1,7 @@
-import config
-import parse_beatmap
-from scene import Scene
+from src.config import config
+from src.noosu import parse_beatmap
+from src.scene.scene import Scene
 import os
-from pathlib import Path
 import pygame
 
 

@@ -1,5 +1,6 @@
 import pygame
 
+
 class Scene:
     def __init__(self):
         self.next = self
@@ -12,10 +13,9 @@ class Scene:
 
     def update(self, dt):
         """ Run logic """
-    
+
     def render(self, screen):
         """ Draw to the screen """
 
     def switch_to_scene(self, next_scene):
         self.next = next_scene
-        

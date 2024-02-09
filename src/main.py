@@ -1,7 +1,8 @@
-import config
-from setup import Setup
 from pathlib import Path
-from playfield import Playfield
+
+from config import config
+from src.scene.playfield import Playfield
+from src.scene.setup_scene import Setup
 import pygame
 
 if __name__ == "__main__":
@@ -12,8 +13,10 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((config.width, config.height), pygame.FULLSCREEN | pygame.DOUBLEBUF)
     clock = pygame.time.Clock()
     running = True
+
     scene = Playfield(Path("assets/355322 nekodex - circles!/nekodex - circles! (pishifat) [insane!].osu"))
     # scene = Setup()
+
     scene.setup()
 
     ## Game loop

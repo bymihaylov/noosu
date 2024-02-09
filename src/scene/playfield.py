@@ -1,12 +1,9 @@
-from pathlib import Path
-
-import bit_flags
-import config
-import hit_object
-from scene import Scene
-from parse_beatmap import parse_osu_file
-from noosu_object import NoosuObject
-from hit_circle import HitCircle
+from src.config import config
+from src.noosu import bit_flags
+from src.scene.scene import Scene
+from src.noosu.parse_beatmap import parse_osu_file
+from src.noosu.noosu_object import NoosuObject
+from src.noosu.hit_circle import HitCircle
 import pygame
 
 """

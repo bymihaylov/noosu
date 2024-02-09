@@ -1,7 +1,7 @@
-import config
-from hit_object import HitObject
-from timing_point import TimingPoint
-from noosu_object import NoosuObject
+from src.config import config
+from src.noosu.hit_object import HitObject
+from src.noosu.timing_point import TimingPoint
+from src.noosu.noosu_object import NoosuObject
 import zipfile
 from pathlib import Path
 

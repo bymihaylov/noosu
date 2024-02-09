@@ -1,5 +1,5 @@
-from timing_point import TimingPoint
-from hit_object import HitObject
+from src.noosu.timing_point import TimingPoint
+from src.noosu.hit_object import HitObject
 import numpy as np
 
 
