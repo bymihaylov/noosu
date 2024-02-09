@@ -8,13 +8,13 @@ class Scene:
     def setup(self):
         """ Load everything in and initialize attributes """
 
-    def handle_events(self, events):
+    def handle_events(self, events: list[pygame.event.Event]):
         """ Handle the events for this scene """
 
-    def update(self, dt):
+    def update(self, dt: int):
         """ Run logic """
 
-    def render(self, screen):
+    def render(self, screen: pygame.surface.Surface):
         """ Draw to the screen """
 
     def switch_to_scene(self, next_scene):
