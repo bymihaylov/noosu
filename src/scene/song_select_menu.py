@@ -8,7 +8,7 @@ from src.noosu.parse_beatmap import parse_osu_file
 class SongSelectMenu(Scene):
     def __init__(self):
         super().__init__()
-        self.songs_folders = os.listdir(Path("assets"))
+        self.songs_folders = os.listdir(config.assets_dir)
         self.song_index = 0
         self.difficulty_index = 0
         self.noosu_obj = None
@@ -38,7 +38,7 @@ class SongSelectMenu(Scene):
                     self.difficulty_index = (self.difficulty_index - 1) % len(self.osu_files)
 
     def load_song(self):
-        song_folder = Path("assets") / self.songs_folders[self.song_index]
+        song_folder = config.assets_dir / self.songs_folders[self.song_index]
         self.osu_files = list(song_folder.glob("*.osu"))
         self.noosu_obj = parse_osu_file(self.osu_files[0])
         self.image = pygame.image.load(self.noosu_obj.image_path)
