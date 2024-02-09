@@ -1,20 +1,26 @@
+from pathlib import Path
+
 from src.config import config
 from src.noosu import parse_beatmap
 from src.scene.scene import Scene
+from src.scene.song_select_menu import SongSelectMenu
 import os
 import pygame
 
 
 class Setup(Scene):
     def __init__(self):
+        super().__init__()
 
         self.assets_dir: os.PathLike = config.assets_dir
         self.external_packs: os.PathLike = config.external_packs_dir
         self.font_path: os.PathLike = config.font_dir
-        self.font = pygame.font.Font(self.font_path / "MetronicPro.ttf", 16)
+        self.font = pygame.font.Font(Path(self.font_path) / "MetronicPro.ttf", 16)
         self.text_surface = None
         self.text_position = (20, 20)
         self.render_text("Setup...")
+
+        self.setup()
 
     def setup(self):
         ext_packs_was_initially_missing: bool = self.create_dir_if_missing(self.external_packs)
@@ -33,6 +39,9 @@ class Setup(Scene):
 
         self.render_text(f"Setup...done", color=config.green)
 
+        self.switch_to_scene(SongSelectMenu())
+
+
     def extract_missing_packs(self):
         external_packs_names = {item.stem for item in self.external_packs.glob('*.osz')}
         assets_names = {item.stem for item in self.assets_dir.iterdir()}
@@ -46,10 +55,6 @@ class Setup(Scene):
 
     def handle_events(self, events):
         pass
-        # for event in events:
-        #     if event.type == pygame.KEYDOWN:
-        #         if event.key == pygame.K_RETURN:
-        #             pass
 
     def update(self, dt):
         pass
