@@ -14,19 +14,12 @@ source: https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 
 
 class HitCircle(pygame.sprite.Sprite):
-    def __init__(self, color: tuple[int, int, int], position: tuple[int, int], circle_size: float):
-        # Call the parent class (Sprite) constructor
+    def __init__(self, position: tuple[int, int], circle_size: float):
         super().__init__()
 
         self.radius = 54.4 - 4.48 * circle_size
-        self.image = pygame.Surface((self.radius * 2, self.radius * 2))
-        # Set the background color and set it to be transparent
-        self.image.fill(config.white)
-        self.image.set_colorkey(config.white)
-
-        self.color = color
-
-        # Draw the hit circle
-        pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius)
+        scaled_size = (int(self.radius * 4), int(self.radius * 4))
+        self.image = pygame.image.load(config.ui_dir / "hit_circle.tiff")
+        self.image = pygame.transform.smoothscale(self.image, scaled_size).convert_alpha()
 
         self.rect = self.image.get_rect(center=position)
