@@ -78,7 +78,6 @@ class Playfield(Scene):
                         self.all_sprites_list.remove(hit_circle)
                         self.score += 1
                         self.str_to_surface(f"Score: {self.score}")
-                        print(self.score)
 
     def gamefield_to_screenspace(self, gamefield: tuple[int, int]) -> tuple[int, int]:
         """
@@ -155,7 +154,8 @@ class Playfield(Scene):
         self.score_text_rect = self.score_text.get_rect(center=self.score_text_position)
 
     def render(self, screen):
-        screen.fill(config.Colour.backround)
+        # screen.fill(config.Colour.backround)
+        screen.blit(self.gradient_dark, self.gradient_dark_rect)
         if self.score_text and self.score_text_rect:
             screen.blit(self.score_text, self.score_text_rect)
         self.all_sprites_list.draw(screen)

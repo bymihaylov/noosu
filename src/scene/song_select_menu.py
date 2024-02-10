@@ -23,6 +23,9 @@ class SongSelectMenu(Scene):
         self.load_song()
         self.should_render_img_and_text = True
 
+        self.download_img = pygame.image.load(config.ui_dir / "download_beatmaps.tiff")
+        self.download_img_rect = self.download_img.get_rect()
+
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -51,12 +54,16 @@ class SongSelectMenu(Scene):
         self.render_text(text, config.Colour.light_purple)
 
     def render(self, screen):
-        screen.fill(color=config.Colour.backround)
+        # screen.fill(color=config.Colour.backround)
+        screen.blit(self.gradient_light, self.gradient_light_rect)
 
         if self.should_render_img_and_text:
             screen.blit(self.image, self.image_rect)
             screen.blit(self.song_caption_text, self.song_caption_text_rect)
             self.render_osu_files(screen)
+
+            if config.CLIENT_ID and config.CLIENT_SECRET:
+                screen.blit(self.download_img, self.download_img_rect)
 
     def render_text(self, text: str, color: config.Colour = config.Colour.foreground):
         self.song_caption_text = self.font.render(text, True, color)
