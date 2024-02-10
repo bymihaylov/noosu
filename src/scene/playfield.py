@@ -1,7 +1,6 @@
 from src.config import config
 from src.noosu import bit_flags
 from src.scene.scene import Scene
-from src.noosu.parse_beatmap import parse_osu_file
 from src.noosu.noosu_object import NoosuObject
 from src.noosu.hit_circle import HitCircle
 import pygame
@@ -18,10 +17,12 @@ source: https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 """
 
 
+
 class Playfield(Scene):
     def __init__(self, noosu_obj: NoosuObject):
         super().__init__()
 
+        pygame.mouse.set_visible(False)
 
         self.gamefield_width = 640
         self.gamefield_height = 480
@@ -49,6 +50,20 @@ class Playfield(Scene):
         self.all_sprites_list = pygame.sprite.Group()
         self.hit_obj_index = 0
 
+        self.cursor_img = pygame.image.load(config.ui_dir / "cursor.tiff")
+        cursor_img_radius: float = 54.4 - 4.48 * self.noosu.difficulty["CircleSize"]
+        scaled_size: tuple[int, int] = int(cursor_img_radius * 4), int(cursor_img_radius * 4)
+        self.cursor_img = pygame.transform.smoothscale(self.cursor_img, scaled_size).convert_alpha()
+        # self.cursor_img_rect = self.cursor_img.get_rect()
+        self.cursor_pos = [pygame.mouse.get_pos()]
+
+        self.score = 0
+        self.font_path = config.font_dir
+        self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 32)
+        self.score_text = None
+        self.score_text_rect = None
+        self.score_text_position = 1920 - 40 * 6, 1080
+
         self.setup()
 
     def setup(self):
@@ -57,8 +72,13 @@ class Playfield(Scene):
 
     def handle_events(self, events):
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                print("Click")
+           if event.type == pygame.MOUSEBUTTONDOWN:
+                for hit_circle in self.all_sprites_list:
+                    if hit_circle.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.all_sprites_list.remove(hit_circle)
+                        self.score += 1
+                        self.str_to_surface(f"Score: {self.score}")
+                        print(self.score)
 
     def gamefield_to_screenspace(self, gamefield: tuple[int, int]) -> tuple[int, int]:
         """
@@ -121,8 +141,24 @@ class Playfield(Scene):
             screenspace_coords = self.gamefield_to_screenspace(gamefield_coords)
 
             # Create and add HitCircle object to the sprite group
-            hit_circle = HitCircle(config.blue, screenspace_coords, 5)
+            hit_circle = HitCircle(screenspace_coords, self.noosu.difficulty["CircleSize"])
             self.all_sprites_list.add(hit_circle)
 
+        x, y = pygame.mouse.get_pos()
+        x -= self.cursor_img.get_width() / 2
+        y -= self.cursor_img.get_height() / 2
+
+        self.cursor_pos = [x, y]
+
+    def str_to_surface(self, text: str, color: config.Colour = config.Colour.foreground):
+        self.score_text = self.font.render(text, True, color)
+        self.score_text_rect = self.score_text.get_rect(center=self.score_text_position)
+
     def render(self, screen):
+        screen.fill(config.Colour.backround)
+        if self.score_text and self.score_text_rect:
+            screen.blit(self.score_text, self.score_text_rect)
         self.all_sprites_list.draw(screen)
+        screen.blit(self.cursor_img, self.cursor_pos)
+
+
