@@ -4,6 +4,8 @@ assets_dir = Path("assets")
 external_packs_dir = Path("external_packs")
 font_dir = Path("fonts")
 
+song_select_menu_image_resolution: tuple[int, int] = 1280, 720
+
 ## 640x480
 # width = 640
 # height = 480

@@ -14,6 +14,7 @@ class SongSelectMenu(Scene):
         self.difficulty_index = 0
         self.noosu_obj = None
         self.image = None
+        self.image_rect = None
         self.osu_files = []
         self.font_path = config.font_dir
         self.font = pygame.font.Font(Path(self.font_path) / "MetronicPro.ttf", 32)
@@ -44,26 +45,28 @@ class SongSelectMenu(Scene):
         self.osu_files = list(song_folder.glob("*.osu"))
         self.noosu_obj = parse_osu_file(self.osu_files[0])
         self.image = pygame.image.load(self.noosu_obj.image_path)
+        self.image = pygame.transform.smoothscale(self.image, config.song_select_menu_image_resolution)
+        self.image_rect = self.image.get_rect(center=(config.width / 2, config.height / 2 - 40 * 3))
         self.render_text(self.noosu_obj.metadata["TitleUnicode"], config.green)
 
     def render(self, screen):
         screen.fill(color=config.black)
 
         if self.should_render_img_and_text:
-            screen.blit(self.image, (0, 0))
+            screen.blit(self.image, self.image_rect)
             screen.blit(self.song_caption_text, self.song_caption_text_rect)
             self.render_osu_files(screen)
 
     def render_text(self, text: str, color: tuple[int, int, int] = config.white):
         self.song_caption_text = self.font.render(text, True, color)
-        self.song_caption_text_rect = self.song_caption_text.get_rect(center=(config.width / 2, config.height + 40))
+        self.song_caption_text_rect = self.song_caption_text.get_rect(center=(config.width / 2, config.height / 2 + 40 * 8))
 
     def render_osu_files(self, screen):
-        y_offset = config.height + 100
+        y_offset = config.height / 2 + 40 * 8 + 100
         for i, osu_file in enumerate(self.osu_files):
             text = self.get_difficulty(osu_file)
             if i == self.difficulty_index:
-                text = f"-> {text} <-"
+                text = f">  {text}"
             text_surface = self.font.render(text, True, config.white)
             text_rect = text_surface.get_rect(center=(config.width / 2, y_offset))
             screen.blit(text_surface, text_rect)
