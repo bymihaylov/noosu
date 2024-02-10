@@ -4,12 +4,14 @@ from src.config import config
 
 
 class SongMetadataButton(pygame.sprite.Sprite):
-    def __init__(self, title: str, artist: str, difficulty: str, left: int, top: int):
+    def __init__(self, metadata: tuple[str, str, str, str], left: int, top: int):
         super().__init__()
         self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 32)
-        self.title_surface = self.font.render(f"Title: {title}", True, config.Colour.light_purple)
-        self.artist_surface = self.font.render(f"Artist: {artist}", True, config.Colour.light_purple)
-        self.difficulty_surface = self.font.render(f"Difficulty: {difficulty}", True, config.Colour.light_purple)
+        self.title_surface = self.font.render(f"Title: {metadata[0]}", True, config.Colour.light_purple)
+        self.artist_surface = self.font.render(f"Artist: {metadata[1]}", True, config.Colour.light_purple)
+        self.difficulty_surface = self.font.render(f"Difficulty: {metadata[2]}", True, config.Colour.light_purple)
+
+        self.set_id = metadata[3]
 
         text_width = max(self.title_surface.get_width(),
                          self.artist_surface.get_width(),
