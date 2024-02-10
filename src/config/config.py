@@ -12,9 +12,14 @@ ui_dir = Path("ui")
 
 song_select_menu_image_resolution: tuple[int, int] = 1280, 720
 
-load_dotenv()
-CLIENT_ID = os.getenv("OSU_API_CLIENT_ID")
-CLIENT_SECRET = os.getenv("OSU_API_CLIENT_SECRET")
+# load_dotenv()
+# CLIENT_ID = os.getenv("OSU_API_CLIENT_ID")
+# CLIENT_SECRET = os.getenv("OSU_API_CLIENT_SECRET")
+
+### https://chimu.moe/docs - Mirror api for searching and downloading osu! beatmaps
+api_base_url = f"https://api.chimu.moe"
+api_search_url = f"{api_base_url}/v1/search"
+api_download_url = f"{api_base_url}/v1/download"
 
 ## 640x480
 # width = 640
