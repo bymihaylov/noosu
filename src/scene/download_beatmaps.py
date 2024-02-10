@@ -1,6 +1,7 @@
 import pygame
 
 from src.api_client.search import search_beatmap
+from src.api_client.download import download_by_set_id
 from src.scene.scene import Scene
 from src.config import config
 from src.config import custom_events
@@ -32,6 +33,8 @@ class DownloadBeatmaps(Scene):
         for event in events:
             if event.type == custom_events.TEXT_INPUT_SUBMITTED:
                 self.add_song_metadata_buttons(event.text)
+            elif event.type == custom_events.SET_ID_SUBMITTED:
+                download_by_set_id(event.set_id, event.artist, event.title)
 
 
     def add_song_metadata_buttons(self, search_query: str):
