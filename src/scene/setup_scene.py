@@ -15,7 +15,7 @@ class Setup(Scene):
         self.assets_dir: os.PathLike = config.assets_dir
         self.external_packs: os.PathLike = config.external_packs_dir
         self.font_path: os.PathLike = config.font_dir
-        self.font = pygame.font.Font(Path(self.font_path) / "MetronicPro.ttf", 16)
+        self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 16)
         self.text_surface = None
         self.text_position = (20, 20)
         self.render_text("Setup...")
@@ -37,7 +37,7 @@ class Setup(Scene):
         else:
             self.extract_missing_packs()
 
-        self.render_text(f"Setup...done", color=config.green)
+        self.render_text(f"Setup...done", color=config.Colour.foreground)
 
         self.switch_to_scene(SongSelectMenu())
 
@@ -64,7 +64,7 @@ class Setup(Scene):
             screen.fill(color=config.black)
             screen.blit(self.text_surface, self.text_position)
 
-    def render_text(self, text: str, color: tuple[int, int, int] = config.white):
+    def render_text(self, text: str, color: config.Colour = config.Colour.foreground):
         self.text_surface = self.font.render(text, True, color)
 
     def create_dir_if_missing(self, path: os.PathLike) -> bool:
