@@ -4,6 +4,7 @@ import pygame
 from src.config import config
 from src.scene.scene import Scene
 from src.noosu.parse_beatmap import parse_osu_file
+from src.scene.playfield import Playfield
 
 class SongSelectMenu(Scene):
     def __init__(self):
@@ -19,12 +20,13 @@ class SongSelectMenu(Scene):
         self.song_caption_text = None
         self.song_caption_text_rect = None
         self.load_song()
+        self.should_render_img_and_text = True
 
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.choose_song()
+                    self.play_choosen_song()
                 elif event.key == pygame.K_RIGHT:
                     self.song_index = (self.song_index + 1) % len(self.songs_folders)
                     self.load_song()
@@ -47,9 +49,10 @@ class SongSelectMenu(Scene):
     def render(self, screen):
         screen.fill(color=config.black)
 
-        screen.blit(self.image, (0, 0))
-        screen.blit(self.song_caption_text, self.song_caption_text_rect)
-        self.render_osu_files(screen)
+        if self.should_render_img_and_text:
+            screen.blit(self.image, (0, 0))
+            screen.blit(self.song_caption_text, self.song_caption_text_rect)
+            self.render_osu_files(screen)
 
     def render_text(self, text: str, color: tuple[int, int, int] = config.white):
         self.song_caption_text = self.font.render(text, True, color)
@@ -66,9 +69,6 @@ class SongSelectMenu(Scene):
             screen.blit(text_surface, text_rect)
             y_offset += 40
 
-    # def get_osu_file_display_name(self, osu_file):
-    #     return osu_file.stem
-
     def get_difficulty(self, osu_file):
         str = osu_file.stem
         start_index = str.find("[")
@@ -80,6 +80,7 @@ class SongSelectMenu(Scene):
         return str
 
 
-    def choose_song(self):
-        # Implement your logic for selecting a song here
-        pass
+    def play_choosen_song(self):
+        self.should_render_img_and_text = False
+        self.noosu_obj = parse_osu_file(self.osu_files[self.difficulty_index])
+        self.switch_to_scene(Playfield(self.noosu_obj))

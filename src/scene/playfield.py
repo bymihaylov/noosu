@@ -22,6 +22,7 @@ class Playfield(Scene):
     def __init__(self, noosu_obj: NoosuObject):
         super().__init__()
 
+
         self.gamefield_width = 640
         self.gamefield_height = 480
         self.gamefield_shift = 8
