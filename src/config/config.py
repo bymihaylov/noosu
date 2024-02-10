@@ -1,5 +1,7 @@
+import os
 from enum import Enum
 from pathlib import Path
+from dotenv import load_dotenv
 
 import pygame.color
 
@@ -9,6 +11,10 @@ font_dir = Path("fonts")
 ui_dir = Path("ui")
 
 song_select_menu_image_resolution: tuple[int, int] = 1280, 720
+
+load_dotenv()
+CLIENT_ID = os.getenv("OSU_API_CLIENT_ID")
+CLIENT_SECRET = os.getenv("OSU_API_CLIENT_SECRET")
 
 ## 640x480
 # width = 640
