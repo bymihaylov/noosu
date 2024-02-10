@@ -27,12 +27,13 @@ def search_beatmap(text: str, amount: int = 5) -> list[tuple[str, str, str, str]
     if not data:
         raise ValueError("No data found in API response.")
 
+
     beatmap_info_list = []
 
     for beatmap_info in data:
         title = beatmap_info.get("Title", "")
         artist = beatmap_info.get("Artist", "")
-        difficulty = beatmap_info["ChildrenBeatmaps"][0]["DiffName"] if "ChildrenBeatmaps" in beatmap_info else ""
+        difficulty = beatmap_info["ChildrenBeatmaps"][0]["DiffName"] if beatmap_info["ChildrenBeatmaps"] else "Unknown"
         set_id = str(beatmap_info.get("SetId", ""))
         beatmap_info_list.append((title, artist, difficulty, set_id))
 
