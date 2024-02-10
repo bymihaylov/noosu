@@ -4,9 +4,9 @@ from src.config import config
 
 
 class SongMetadataButton(pygame.sprite.Sprite):
-    def __init__(self, title: str, artist: str, difficulty: str):
+    def __init__(self, title: str, artist: str, difficulty: str, left: int, top: int):
         super().__init__()
-        self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 16)
+        self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 32)
         self.title_surface = self.font.render(f"Title: {title}", True, config.Colour.light_purple)
         self.artist_surface = self.font.render(f"Artist: {artist}", True, config.Colour.light_purple)
         self.difficulty_surface = self.font.render(f"Difficulty: {difficulty}", True, config.Colour.light_purple)
@@ -19,12 +19,14 @@ class SongMetadataButton(pygame.sprite.Sprite):
                        self.artist_surface.get_height() +
                        self.difficulty_surface.get_height()
                        )
-        self.padding = 10
-        self.rect = pygame.Rect(0, 0, text_width + 2 * self.padding, text_height + 2 * self.padding)
+        self.padding = 40
+        self.rect = pygame.Rect(left, top, text_width + 2 * self.padding, text_height + 2 * self.padding)
+        self.hovered = False
 
     def draw(self, surface):
         # Draw the rectangle around the text surfaces
-        pygame.draw.rect(surface, config.Colour.light_purple, self.rect, 2)
+        fill_color = config.Colour.light_purple if self.hovered else config.Colour.purple
+        pygame.draw.rect(surface, fill_color, self.rect, 2)
 
         # Blit the text surfaces onto the surface
         surface.blit(self.title_surface, (self.rect.x + self.padding, self.rect.y + self.padding))
@@ -38,3 +40,7 @@ class SongMetadataButton(pygame.sprite.Sprite):
                       self.artist_surface.get_height() +
                       self.padding)
                      )
+
+    def update(self):
+        self.hovered = self.rect.collidepoint(pygame.mouse.get_pos())
+
