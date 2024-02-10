@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import pygame
 from src.config import config
+from src.scene.download_beatmaps import DownloadBeatmaps
 from src.scene.scene import Scene
 from src.noosu.parse_beatmap import parse_osu_file
 from src.scene.playfield import Playfield
@@ -25,6 +26,9 @@ class SongSelectMenu(Scene):
 
         self.download_img = pygame.image.load(config.ui_dir / "download_beatmaps.tiff")
         self.download_img_rect = self.download_img.get_rect()
+        self.download_img_hover = pygame.image.load(config.ui_dir / "download_beatmaps-hover.tiff")
+        self.download_img_hover_rect = self.download_img.get_rect()
+        self.is_dowload_hovered = False
 
     def handle_events(self, events):
         for event in events:
@@ -42,6 +46,8 @@ class SongSelectMenu(Scene):
                     self.difficulty_index = (self.difficulty_index + 1) % len(self.osu_files)
                 elif event.key == pygame.K_UP:
                     self.difficulty_index = (self.difficulty_index - 1) % len(self.osu_files)
+            if event.type == pygame.MOUSEBUTTONDOWN and self.is_dowload_hovered:
+                self.switch_to_scene(DownloadBeatmaps())
 
     def load_song(self):
         song_folder = config.assets_dir / self.songs_folders[self.song_index]
@@ -53,6 +59,9 @@ class SongSelectMenu(Scene):
         text = f'{self.noosu_obj.metadata["ArtistUnicode"]} - {self.noosu_obj.metadata["TitleUnicode"]}'
         self.render_text(text, config.Colour.light_purple)
 
+    def update(self, dt: int):
+        self.is_dowload_hovered = self.download_img_rect.collidepoint(pygame.mouse.get_pos())
+
     def render(self, screen):
         # screen.fill(color=config.Colour.backround)
         screen.blit(self.gradient_light, self.gradient_light_rect)
@@ -62,7 +71,14 @@ class SongSelectMenu(Scene):
             screen.blit(self.song_caption_text, self.song_caption_text_rect)
             self.render_osu_files(screen)
 
-            if config.CLIENT_ID and config.CLIENT_SECRET:
+            # if config.CLIENT_ID and config.CLIENT_SECRET:
+            #     if self.is_dowload_hovered:
+            #         screen.blit(self.download_img_hover, self.download_img_hover_rect)
+            #     else:
+            #         screen.blit(self.download_img, self.download_img_rect)
+            if self.is_dowload_hovered:
+                screen.blit(self.download_img_hover, self.download_img_hover_rect)
+            else:
                 screen.blit(self.download_img, self.download_img_rect)
 
     def render_text(self, text: str, color: config.Colour = config.Colour.foreground):
