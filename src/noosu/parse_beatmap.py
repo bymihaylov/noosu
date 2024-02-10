@@ -28,7 +28,7 @@ def parse_osu_file(src_path: str | Path) -> NoosuObject:
     timing_points: list[TimingPoint] = parse_timing(osu_file_content["[TimingPoints]"])
     hit_objects: list[HitObject] = parse_hit_object(osu_file_content["[HitObjects]"])
 
-    image_path: Path = parse_events_to_get_img_path(osu_file_content["[Events]"], src_dir_path)
+    image_path: Path | None = parse_events_to_get_img_path(osu_file_content["[Events]"], src_dir_path)
 
     return NoosuObject(general, metadata, difficulty, timing_points, hit_objects, image_path)
 
@@ -142,7 +142,6 @@ def parse_hit_object_line(line: str) -> HitObject:
 
     x, y, time, obj_type, hit_sound, *obj_params, hit_sample = map(str, line.split(','))
     x, y, time, obj_type, hit_sound = map(int, [x, y, time, obj_type, hit_sound])  # Cast to int
-    # print(f"{x, y, time, obj_type, hit_sound, *obj_params, hit_sample =}")
 
     return HitObject(x, y, time, obj_type, hit_sound, obj_params, hit_sample)
 
@@ -162,7 +161,8 @@ Example:
 We need CRAB RAVE BG.png
 """
 
-def parse_events_to_get_img_path(content: str, src_dir_path: str | Path) -> Path:
+
+def parse_events_to_get_img_path(content: str, src_dir_path: str | Path) -> Path | None:
     # Find the index of the first occurrence of double quotes
     start_index = content.find('"')
 
@@ -174,4 +174,4 @@ def parse_events_to_get_img_path(content: str, src_dir_path: str | Path) -> Path
         filename = content[start_index + 1:end_index]
         return src_dir_path / filename
     else:
-        return Path("")
+        return None

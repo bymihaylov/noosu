@@ -53,9 +53,10 @@ class SongSelectMenu(Scene):
         song_folder = config.assets_dir / self.songs_folders[self.song_index]
         self.osu_files = list(song_folder.glob("*.osu"))
         self.noosu_obj = parse_osu_file(self.osu_files[0])
-        self.image = pygame.image.load(self.noosu_obj.image_path)
-        self.image = pygame.transform.smoothscale(self.image, config.song_select_menu_image_resolution)
-        self.image_rect = self.image.get_rect(center=(config.width / 2, config.height / 2 - 40 * 3))
+        if self.noosu_obj.image_path:
+            self.image = pygame.image.load(self.noosu_obj.image_path)
+            self.image = pygame.transform.smoothscale(self.image, config.song_select_menu_image_resolution)
+            self.image_rect = self.image.get_rect(center=(config.width / 2, config.height / 2 - 40 * 3))
         text = f'{self.noosu_obj.metadata["ArtistUnicode"]} - {self.noosu_obj.metadata["TitleUnicode"]}'
         self.render_text(text, config.Colour.light_purple)
 
@@ -67,7 +68,8 @@ class SongSelectMenu(Scene):
         screen.blit(self.gradient_light, self.gradient_light_rect)
 
         if self.should_render_img_and_text:
-            screen.blit(self.image, self.image_rect)
+            if self.noosu_obj.image_path:
+                screen.blit(self.image, self.image_rect)
             screen.blit(self.song_caption_text, self.song_caption_text_rect)
             self.render_osu_files(screen)
 
