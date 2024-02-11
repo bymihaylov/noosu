@@ -38,12 +38,18 @@ class DownloadBeatmaps(Scene):
         self.sprite_group.handle_events(events)
         for event in events:
             if event.type == custom_events.TEXT_INPUT_SUBMITTED:
+                self.remove_song_metadata_buttons()
                 self.add_song_metadata_buttons(event.text)
             elif event.type == custom_events.SET_ID_SUBMITTED:
                 download_by_set_id(event.set_id, event.artist, event.title)
             elif event.type == pygame.MOUSEBUTTONDOWN and self.is_hovered:
                 self.switch_to_scene(src.scene.setup_scene.Setup())
 
+    def remove_song_metadata_buttons(self):
+        """ Remove SongMetadataButton instances from the sprite group """
+        for sprite in self.sprite_group:
+            if isinstance(sprite, SongMetadataButton):
+                sprite.kill()
 
     def add_song_metadata_buttons(self, search_query: str):
         metadata_list: list[tuple[str, str, str, str]] = search_beatmap(search_query)
