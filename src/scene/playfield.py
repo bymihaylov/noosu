@@ -64,7 +64,7 @@ class Playfield(Scene):
         self.font = pygame.font.Font(config.font_dir / "MetronicPro.ttf", 32)
         self.score_text = None
         self.score_text_rect = None
-        self.score_text_position = 1920 - 40 * 6, 1080
+        self.score_text_position = 1920 - 40 * 6, 1080 - 140
 
         self.setup()
 
