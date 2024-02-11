@@ -66,6 +66,8 @@ def parse_general(content: str, src_dir_path: str | Path) -> dict:
 
     cast_val_to_int(data, "AudioLeadIn")
     cast_val_to_int(data, "PreviewTime")
+    if data["PreviewTime"] < 0:
+        data["PreviewTime"] = 0
     return data
 
 
