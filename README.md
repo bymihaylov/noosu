@@ -5,15 +5,15 @@ noosu! is a simplified version of the popular rhythm game "osu!" implemented in 
 Installation:
 --------------
 1. Clone the repository:
-   git clone https://github.com/bymihaylov/noosu.git
+   ```git clone https://github.com/bymihaylov/noosu.git```
 
 2. Install the required dependencies:
-   pip install -r requirements.txt
+   ```pip install -r requirements.txt```
 
 Usage:
 ------
 1. Run the game:
-   python main.py
+   ```python main.py```
 
 2. Navigate to the "Download beatmaps" section:
     - Click the "Download beatmaps" button to access the beatmap download menu.
