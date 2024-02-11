@@ -1,4 +1,6 @@
+import src.scene.song_select_menu
 from src.config import config
+from src.config import custom_events
 from src.noosu import bit_flags
 from src.scene.scene import Scene
 from src.noosu.noosu_object import NoosuObject
@@ -69,6 +71,7 @@ class Playfield(Scene):
     def setup(self):
         pygame.mixer.music.load(self.noosu.general["AudioFilename"])
         pygame.mixer.music.play(0)
+        pygame.mixer.music.set_endevent(custom_events.SONG_ENDED)
 
     def handle_events(self, events):
         for event in events:
@@ -78,6 +81,8 @@ class Playfield(Scene):
                         self.all_sprites_list.remove(hit_circle)
                         self.score += 1
                         self.str_to_surface(f"Score: {self.score}")
+           elif event.type == custom_events.SONG_ENDED:
+               self.switch_to_scene(src.scene.song_select_menu.SongSelectMenu())
 
     def gamefield_to_screenspace(self, gamefield: tuple[int, int]) -> tuple[int, int]:
         """

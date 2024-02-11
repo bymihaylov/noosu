@@ -10,6 +10,7 @@ from src.scene.playfield import Playfield
 class SongSelectMenu(Scene):
     def __init__(self):
         super().__init__()
+        pygame.mouse.set_visible(True)
         self.songs_folders = os.listdir(config.assets_dir)
         self.song_index = 0
         self.difficulty_index = 0
