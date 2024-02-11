@@ -4,7 +4,7 @@ from src.config import custom_events
 from src.noosu import bit_flags
 from src.scene.scene import Scene
 from src.noosu.noosu_object import NoosuObject
-from src.noosu.hit_circle import HitCircle
+from src.sprites.hit_circle import HitCircle
 import pygame
 
 """
