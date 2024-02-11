@@ -1,3 +1,4 @@
+
 import pygame
 import requests
 from src.config import custom_events
@@ -22,3 +23,5 @@ def download_by_set_id(set_id: str, artist: str, title: str) -> bool:
             print(f"Error: {error_message} (Code: {error_code})")
         except ValueError:
             print("Error parsing JSON content")
+        except (requests.exceptions.JSONDecodeError, TypeError):
+            print("JSONDecodeError")

@@ -4,7 +4,7 @@ from src.config import custom_events
 from src.noosu import bit_flags
 from src.scene.scene import Scene
 from src.noosu.noosu_object import NoosuObject
-from src.noosu.hit_circle import HitCircle
+from src.sprites.hit_circle import HitCircle
 import pygame
 
 """
@@ -75,7 +75,7 @@ class Playfield(Scene):
 
     def handle_events(self, events):
         for event in events:
-           if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.K_z or pygame.K_x:
+           if event.type == pygame.MOUSEBUTTONDOWN:
                 for hit_circle in self.all_sprites_list:
                     if hit_circle.rect.collidepoint(pygame.mouse.get_pos()):
                         self.all_sprites_list.remove(hit_circle)
