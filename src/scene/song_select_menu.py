@@ -89,10 +89,10 @@ class SongSelectMenu(Scene):
 
     def render_text(self, text: str, color: config.Colour = config.Colour.foreground):
         self.song_caption_text = self.font.render(text, True, color)
-        self.song_caption_text_rect = self.song_caption_text.get_rect(center=(config.width / 2, config.height / 2 + 40 * 8))
+        self.song_caption_text_rect = self.song_caption_text.get_rect(center=(config.width / 2, config.height / 2 + 40 * 7))
 
     def render_osu_files(self, screen):
-        y_offset = config.height / 2 + 40 * 8 + 100
+        y_offset = config.height / 2 + 40 * 8
         for i, osu_file in enumerate(self.osu_files):
             text = self.get_difficulty(osu_file)
             if i == self.difficulty_index:
