@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import src.scene.download_beatmaps
 from src.config import config
 from src.noosu import parse_beatmap
 from src.scene.scene import Scene
@@ -27,8 +28,7 @@ class Setup(Scene):
         assets_dir_was_initially_missing: bool = self.create_dir_if_missing(self.assets_dir)
 
         if ext_packs_was_initially_missing:
-            # requests logic to pull some .osz packs
-            pass
+            self.switch_to_scene(src.scene.download_beatmaps.DownloadBeatmaps())
 
         if assets_dir_was_initially_missing:
             for archive in self.external_packs.glob('*.osz'):
