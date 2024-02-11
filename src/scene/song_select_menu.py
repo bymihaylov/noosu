@@ -54,11 +54,14 @@ class SongSelectMenu(Scene):
         song_folder = config.assets_dir / self.songs_folders[self.song_index]
         self.osu_files = list(song_folder.glob("*.osu"))
         self.noosu_obj = parse_osu_file(self.osu_files[0])
+        pygame.mixer.music.load(self.noosu_obj.general["AudioFilename"])
+        pygame.mixer.music.play()
         if self.noosu_obj.image_path:
             self.image = pygame.image.load(self.noosu_obj.image_path)
             self.image = pygame.transform.smoothscale(self.image, config.song_select_menu_image_resolution)
             self.image_rect = self.image.get_rect(center=(config.width / 2, config.height / 2 - 40 * 3))
         text = f'{self.noosu_obj.metadata["ArtistUnicode"]} - {self.noosu_obj.metadata["TitleUnicode"]}'
+
         self.render_text(text, config.Colour.light_purple)
 
     def update(self, dt: int):
