@@ -64,8 +64,8 @@ class DownloadBeatmaps(Scene):
     def render(self, screen: pygame.surface.Surface):
         screen.blit(self.gradient_light, self.gradient_light_rect)
         if self.is_hovered:
-            screen.blit(self.go_back_image, self.go_back_image_rect)
-        else:
             screen.blit(self.go_back_image_hover, self.go_back_image_hover_rect)
+        else:
+            screen.blit(self.go_back_image, self.go_back_image_rect)
         self.sprite_group.draw(screen)
 
